@@ -1,0 +1,21 @@
+---
+- name: Update apt
+  sudo: yes
+  apt: update_cache=yes
+
+- name: Install System Packages
+  sudo: yes
+  apt: pkg=git state=latest
+
+- name: ssh directory is present
+  file: dest={{ item }} state=directory
+  with_items: [/root/.ssh,/opt/code,/opt/code/blue,/opt/code/green]
+  tags: [git]
+
+- name: Copy private key
+  sudo: yes
+  copy: src=/vagrant/ansible/files/{{ item.src }} dest=/root/.ssh/{{ item.dest }} mode=0400 owner=root group=root
+  with_items:
+    - { src: 'id_rsa', dest: 'id_rsa' }
+    - { src: 'id_rsa.pub', dest: 'id_rsa.pub' }
+  tags: [git]
