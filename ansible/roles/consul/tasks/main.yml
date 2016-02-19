@@ -1,0 +1,6 @@
+---
+- name: get consul-template
+  get_url: url={{ consul_template.url }} dest=/tmp/consul-template.zip
+
+- name: unzip and install consul-template 
+  unarchive: src=/tmp/consul-template.zip dest=/usr/local/bin copy=no

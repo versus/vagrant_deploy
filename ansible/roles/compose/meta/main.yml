@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Valentin Nastenko
+  description: SSv4 development environment
+  company: Selectspecs.com 
+
+  license: BSD
+  min_ansible_version: 1.2
+
+  platforms:
+  - name: Ubuntu
+  - trusty
+dependencies: []
+
+  

@@ -1,0 +1,85 @@
+db1:
+  image: peterbourgon/tns-db
+
+app1:
+  image: peterbourgon/tns-app
+  links:
+    - db1
+
+app2:
+  image: peterbourgon/tns-app
+  links:
+    - db1
+
+lb1:
+  image: peterbourgon/tns-lb
+  links:
+    - app1
+    - app2
+  ports:
+    - 0.0.0.0:8001:80
+
+lb2:
+  image: peterbourgon/tns-lb
+  links:
+    - app1
+    - app2
+  ports:
+    - 0.0.0.0:8002:80
+
+
+haproxy:
+  image: tutum/haproxy
+  ports:
+   - "80:80"
+  links:
+    - lb1
+    - lb2
+
+registrator:  
+  command: consul://consul:8500
+  image: gliderlabs/registrator:latest
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+  links:
+    - consul
+
+consul:
+  image: "progrium/consul:latest"
+  ports:
+    - "8400:8400"
+    - "8500:8500"
+    - "8600:53"
+  command: "-server -bootstrap -ui-dir /ui"
+  restart: always
+  log_driver: fluentd
+  log_opt:
+    fluentd-address: "127.0.0.1:24224"
+    tag: Backend_blue
+  links:
+    - Fluent
+Cadvisor:
+  image: google/cadvisor
+  ports:
+    - "9999:8080"
+  volumes:
+    - "/:/rootfs:ro"
+    - "/var/run:/var/run:rw"
+    - "/sys:/sys:ro"
+    - "/var/lib/docker/:/var/lib/docker:ro"
+  restart: always
+  log_driver: fluentd
+  log_opt:
+    fluentd-address: "127.0.0.1:24224"
+    tag: Cadvisor
+  links:
+    - Fluent
+
+Fluent:
+  image: selectspecs/dockerfluend
+  volumes:
+    - /opt/logs:/fluentd/log
+  ports:
+    - 24224:24224
+  restart: always
+

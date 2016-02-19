@@ -1,0 +1,16 @@
+---
+server:
+    install: '1'
+    packages: [git, vim, python-mysqldb]
+    timezone: UTC
+    locale: en_US.UTF-8
+vagrant_local:
+    install: '1'
+    vm: { base_box: trusty64, hostname: ssv4.dev, ip: 192.168.33.99, memory: '2048', sharedfolder: ./, useVagrantCloud: '1', syncType: nfs }
+consul_template:
+  url: https://releases.hashicorp.com/consul-template/0.12.2/consul-template_0.12.2_linux_amd64.zip
+  version: 0.12.2
+    
+
+
+

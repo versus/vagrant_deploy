@@ -1,0 +1,2 @@
+[ssv4]
+localhost ansible_connection=local
