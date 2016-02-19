@@ -12,3 +12,15 @@
   pip:
     name: docker-compose
     state: present
+
+- name:  pull containers
+  shell: docker-compose pull
+  args:
+    chdir: /vagrant/docker
+  tags: [service]
+
+- name: start composer
+  shell: docker-compose up -d 
+  args:
+    chdir: /vagrant/docker
+  tags: [service]

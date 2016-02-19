@@ -1,0 +1,21 @@
+db1:
+  image: peterbourgon/tns-db
+
+blue:
+  ports:
+    - 8080
+  environment:
+    - SERVICE_NAME={{ alias }}ssv4-blue
+  image: peterbourgon/tns-app
+  links:
+    - db1
+
+green:
+  ports:
+    - 8080
+  environment:
+    - SERVICE_NAME={{ alias }}ssv4-green
+  image: peterbourgon/tns-app
+  links:
+    - db1
+

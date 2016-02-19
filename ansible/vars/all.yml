@@ -1,7 +1,7 @@
 ---
 server:
     install: '1'
-    packages: [git, vim, python-mysqldb]
+    packages: [git, vim, python-mysqldb, python-urllib3]
     timezone: UTC
     locale: en_US.UTF-8
 vagrant_local:
@@ -10,6 +10,8 @@ vagrant_local:
 consul_template:
   url: https://releases.hashicorp.com/consul-template/0.12.2/consul-template_0.12.2_linux_amd64.zip
   version: 0.12.2
+alias: ""
+service_instances: 1
     
 
 
