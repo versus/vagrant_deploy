@@ -45,6 +45,16 @@
   when: container_color == "blue"
   tags: [service]
 
+- name: git pull for blue
+  git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/blue
+  when: container_color == "blue"
+  tags: [git]
+
+- name: git pull for green
+  git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/green
+  when: container_color == "green"
+  tags: [git]
+
 - name: Container is pulled
   shell: docker-compose pull {{ container_new_color }}
   args:
