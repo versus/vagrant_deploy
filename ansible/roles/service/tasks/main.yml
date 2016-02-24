@@ -46,12 +46,12 @@
   tags: [service]
 
 - name: git pull for blue
-  git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/blue
+  git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/blue  accept_hostkey=true
   when: container_color == "blue"
   tags: [git]
 
 - name: git pull for green
-  git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/green
+  git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/green  accept_hostkey=true
   when: container_color == "green"
   tags: [git]
 
