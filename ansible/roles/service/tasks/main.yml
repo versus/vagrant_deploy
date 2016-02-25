@@ -1,5 +1,12 @@
+---
 - meta: flush_handlers
   tags: [service]
+
+- name: Fail if OS distro is not Ubuntu 14.04
+  fail: 
+      msg="The role is designed only for Ubuntu 14.04"
+  when: "{{ ansible_distribution_version | version_compare('14.04', '!=') }}" 
+
 
 - name: Compose directory is present
   file:
