@@ -7,6 +7,11 @@
     state: directory
   tags: [service]
 
+- name: necessary  directory is present
+  file: dest={{ item }} state=directory
+  with_items: [/root/.ssh,/opt/code,/opt/code/blue,/opt/code/green,/opt/data,/opt/data/haproxy,/opt/data/config]
+  tags: [service]
+
 - name: Compose template is present
   template:
     src: "{{ container_name }}.yml.j2"
@@ -47,12 +52,12 @@
 
 - name: git pull for blue
   git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/blue  accept_hostkey=true
-  when: container_color == "blue"
+  when: container_new_color == "blue"
   tags: [git]
 
 - name: git pull for green
   git: repo=git@github.com:versus/ssv4tempo.git dest=/opt/code/green  accept_hostkey=true
-  when: container_color == "green"
+  when: container_new_color == "green"
   tags: [git]
 
 - name: Container is pulled
@@ -78,6 +83,24 @@
   args:
     chdir: "{{ compose_config_dir }}/{{ alias }}{{ container_name }}"
   tags: [service]
+
+- name: generate haproxy for blue
+  shell: /usr/local/bin/consul-template  -consul localhost:8500 -template "/vagrant/tmpl/haproxy-blue.ctmpl:/opt/data/haproxy/haproxy.cfg"  -once 
+  when: container_new_color == "blue"
+  tags: [consul-template]
+
+- name: generate haproxy for green
+  shell: /usr/local/bin/consul-template  -consul localhost:8500 -template "/vagrant/tmpl/haproxy-green.ctmpl:/opt/data/haproxy/haproxy.cfg"  -once 
+  when: container_new_color == "green"
+  tags: [consul-template]  
+
+- name: Container haproxy is pulled
+  shell: docker-compose pull haproxy_{{ container_new_color }}
+  args:
+    chdir: "{{ compose_config_dir }}/{{ alias }}{{ container_name }}"
+  tags: [service]
+
+
 
 - name: Color is updated
   consul_kv:
