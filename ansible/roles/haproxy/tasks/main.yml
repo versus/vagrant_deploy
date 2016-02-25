@@ -1,0 +1,30 @@
+---
+- name: Fail if OS distro is not Ubuntu 14.04
+  fail: 
+      msg="The role is designed only for Ubuntu 14.04"
+  when: "{{ ansible_distribution_version | version_compare('14.04', '!=') }}" 
+
+- name: Update apt
+  sudo: yes
+  apt: update_cache=yes
+
+- name: install haproxy
+  apt: pkg=haproxy state=installed
+  tags:
+   - haproxy_install
+
+- name: start haproxy
+  service: name=haproxy state=running
+  tags:
+   - haproxy_service
+
+- name: enable haproxy
+  copy: src='default.cfg' dest='/etc/default/haproxy'
+  tags:
+   - haproxy_install
+
+- name: configure haproxy
+  template: src=main.cfg dest=/etc/haproxy/haproxy.cfg
+  notify: reload haproxy
+  tags:
+   - haproxy_configure

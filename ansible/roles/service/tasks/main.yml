@@ -9,7 +9,7 @@
 
 - name: necessary  directory is present
   file: dest={{ item }} state=directory
-  with_items: [/root/.ssh,/opt/code,/opt/code/blue,/opt/code/green,/opt/data,/opt/data/haproxy,/opt/data/config]
+  with_items: [/root/.ssh,/opt/code,/opt/code/blue,/opt/code/green,/opt/data/config]
   tags: [service]
 
 - name: Compose template is present
@@ -85,22 +85,18 @@
   tags: [service]
 
 - name: generate haproxy for blue
-  shell: /usr/local/bin/consul-template  -consul localhost:8500 -template "/vagrant/tmpl/haproxy-blue.ctmpl:/opt/data/haproxy/haproxy.cfg"  -once 
+  shell: /usr/local/bin/consul-template  -consul localhost:8500 -template "/vagrant/tmpl/haproxy-blue.ctmpl:/etc/haproxy/haproxy.cfg"  -once 
   when: container_new_color == "blue"
   tags: [consul-template]
 
 - name: generate haproxy for green
-  shell: /usr/local/bin/consul-template  -consul localhost:8500 -template "/vagrant/tmpl/haproxy-green.ctmpl:/opt/data/haproxy/haproxy.cfg"  -once 
+  shell: /usr/local/bin/consul-template  -consul localhost:8500 -template "/vagrant/tmpl/haproxy-green.ctmpl:/etc/haproxy/haproxy.cfg"  -once 
   when: container_new_color == "green"
   tags: [consul-template]  
 
-- name: Container haproxy is pulled
-  shell: docker-compose pull haproxy_{{ container_new_color }}
-  args:
-    chdir: "{{ compose_config_dir }}/{{ alias }}{{ container_name }}"
-  tags: [service]
-
-
+- name: reload haproxy
+  service: name=haproxy state=reloaded
+  tags: [haproxy_service]
 
 - name: Color is updated
   consul_kv:

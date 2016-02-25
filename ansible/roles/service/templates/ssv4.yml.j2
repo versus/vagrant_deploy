@@ -3,40 +3,16 @@ db1:
 
 blue:
   ports:
-    - 8080
+    - 5000
   environment:
     - SERVICE_NAME={{ alias }}ssv4-blue
-  image: peterbourgon/tns-app
-  links:
-    - db1
+  image: training/webapp
+
 
 green:
   ports:
-    - 8080
+    - 5000
   environment:
     - SERVICE_NAME={{ alias }}ssv4-green
-  image: peterbourgon/tns-app
-  links:
-    - db1
+  image: training/webapp
 
-haproxy_blue:
-  environment:
-     - CONSUL_PORT_8500_TCP_ADDR={{ ansible_eth0.ipv4.address }}
-     - CONSUL_PORT_8500_TCP_PORT=8500
-  ports:
-    - 80:80
-    - 8001:8001
-  image: shayashibara/docker-consul-template-haproxy
-  volumes:
-    - "/vagrant/tmpl/haproxy-blue.ctmpl:/etc/haproxy/haproxy.template"
-
-haproxy_green:
-  environment:
-    - CONSUL_PORT_8500_TCP_ADDR={{ ansible_eth0.ipv4.address }}
-    - CONSUL_PORT_8500_TCP_PORT=8500
-  ports:
-    - 81:80
-    - 8101:8001
-  image: shayashibara/docker-consul-template-haproxy
-  volumes:
-    - "/vagrant/tmpl/haproxy-green.ctmpl:/etc/haproxy/haproxy.template"

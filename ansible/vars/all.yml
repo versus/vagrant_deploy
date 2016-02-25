@@ -11,7 +11,7 @@ consul_template:
   url: https://releases.hashicorp.com/consul-template/0.12.2/consul-template_0.12.2_linux_amd64.zip
   version: 0.12.2
 alias: ""
-service_instances: 1
+service_instances: 2
     
 
 
